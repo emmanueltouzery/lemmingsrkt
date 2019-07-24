@@ -20,8 +20,11 @@
 (define barve-nivoja (list->vector (image->color-list nivo)))
 
 (define (prozorno? x y)
-  (equal? (color 255 255 255 0)
-          (vector-ref barve-nivoja (+ x (* (image-width nivo) y)))))
+  (define pixel-idx (+ x (* (image-width nivo) y)))
+  (if (>= pixel-idx (vector-length barve-nivoja))
+      #t
+      (equal? (color 255 255 255 0)
+          (vector-ref barve-nivoja pixel-idx))))
 
 (struct stanje-igre
   (anim-korak lemming-akcija lemming-x lemming-y) #:transparent)
