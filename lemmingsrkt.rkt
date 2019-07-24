@@ -16,7 +16,12 @@
   (lemming-anim-info 0 2 3))
 
 (define lemming-anim (bitmap/file "lemming_anim.png"))
-(define map (bitmap/file "map.png"))
+(define nivo (bitmap/file "map.png"))
+(define barve-nivoja (list->vector (image->color-list nivo)))
+
+(define (prozorno? x y)
+  (equal? (color 255 255 255 0)
+          (vector-ref barve-nivoja (+ x (* (image-width nivo) y)))))
 
 (struct stanje-igre
   (anim-korak lemming-akcija lemming-x lemming-y) #:transparent)
@@ -33,17 +38,18 @@
          (place-image/align
           lemming
           lemming-x lemming-y "left" "bottom"
-          map)))
+          nivo)))
 
 (define/match* (naslednji (stanje-igre korak akcija lemming-x lemming-y))
-  (define dotaknil-tla (> lemming-y 78))
+  (define dotaknil-tla (not (prozorno? lemming-x lemming-y)))
+  (define nova-akcija (if dotaknil-tla hodi pada))
   (stanje-igre
-   (if (>= korak (lemming-anim-info-korake akcija)) 0 (+ 1 korak))
-   (if dotaknil-tla hodi pada)
+   (if (>= korak (lemming-anim-info-korake nova-akcija)) 0 (+ 1 korak))
+   nova-akcija
    (if dotaknil-tla (add1 lemming-x) lemming-x)
    (if dotaknil-tla lemming-y (add1 lemming-y))))
 
 (big-bang
-  (stanje-igre 0 pada 262 20)
+  (stanje-igre 0 pada 211 20)
   (on-tick naslednji 0.12)
   (to-draw animiraj))
