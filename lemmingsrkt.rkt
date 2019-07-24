@@ -37,7 +37,7 @@
   (scale 2
          (place-image/align
           lemming
-          lemming-x lemming-y "left" "bottom"
+          lemming-x lemming-y "center" "bottom"
           nivo)))
 
 (define/match* (naslednji (stanje-igre korak akcija lemming-x lemming-y))
